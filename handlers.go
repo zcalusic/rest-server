@@ -11,6 +11,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -631,6 +632,11 @@ func (s *Server) SaveBlob(w http.ResponseWriter, r *http.Request) {
 }
 
 func syncDir(dirname string) error {
+	if runtime.GOOS == "windows" {
+		// syncing a directory is not possible on windows
+		return nil
+	}
+
 	dir, err := os.Open(dirname)
 	if err != nil {
 		return err
